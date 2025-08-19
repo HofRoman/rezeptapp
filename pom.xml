@@ -22,7 +22,7 @@
 	</properties>
 
 	<dependencies>
-		<!-- 🌟 Wichtig für @RestController und @GetMapping -->
+		<!-- Wichtig für @RestController und @GetMapping -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
