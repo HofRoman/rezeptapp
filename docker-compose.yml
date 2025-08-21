@@ -1,0 +1,42 @@
+services:
+  db:
+    image: gvenzl/oracle-xe:21
+    container_name: rezeptapp-oracle
+    ports:
+      - "1521:1521"
+      - "5500:5500"
+    environment:
+      ORACLE_PASSWORD: ${ORACLE_PASSWORD}
+      APP_USER: ${APP_USER}
+      APP_USER_PASSWORD: ${APP_USER_PASSWORD}
+      ORACLE_CHARACTERSET: AL32UTF8
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+    healthcheck:
+      # nutzt jetzt ebenfalls die Variable
+      test: ["CMD", "bash", "-lc", "echo 'exit' | sqlplus -L -s system/${ORACLE_PASSWORD}@localhost:1521/XEPDB1 || exit 1"]
+      interval: 20s
+      timeout: 10s
+      retries: 30
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rezeptapp-web
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: oracle
+      # Übergib DB-Infos an Spring (werden in application-oracle.yml gelesen)
+      DB_HOST: db
+      DB_PORT: "1521"
+      DB_SERVICE: XEPDB1
+      DB_USERNAME: ${APP_USER}
+      DB_PASSWORD: ${APP_USER_PASSWORD}
+    ports:
+      - "8080:8080"
+
+volumes:
+  oracle-data:
