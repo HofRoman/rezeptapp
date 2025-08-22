@@ -12,3 +12,8 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.OracleDialect
     show-sql: true
+
+    spring:
+      sql:
+        init:
+          mode=always:
