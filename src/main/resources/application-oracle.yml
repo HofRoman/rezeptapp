@@ -7,13 +7,10 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.OracleDialect
+      ddl-auto: none     # <-- Schema NICHT von Hibernate, wir nutzen schema.sql
     show-sql: true
 
-    spring:
-      sql:
-        init:
-          mode=always:
+  sql:
+    init:
+      mode: always
+      continue-on-error: true   # <-- DROP-Fehler (wenn Tabelle fehlt) ignorieren
